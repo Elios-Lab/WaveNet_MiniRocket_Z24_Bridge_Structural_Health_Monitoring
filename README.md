@@ -1,0 +1,1 @@
+# WaveNet_MiniRocket_Z24_Bridge_Structural_Health_Monitoring
