@@ -38,7 +38,8 @@ def evaluate_MiniRocket_model(model,X_test,y_test):
     return [accuracy ,precision, recall ,f1_score]
 
 def datasetManagement(NbOfClasses,windows_length=65536):
-    #values from 01 to 17
+    if NbOfClasses is None:
+        raise ValueError("Classes cannot be None.")        
     if NbOfClasses == 15:
         classes = ['01','03','04','05','06','07','09','10','11','12','13','14','15','16','17']
     else:
@@ -46,8 +47,7 @@ def datasetManagement(NbOfClasses,windows_length=65536):
 
     classesPaths=[]
     for classNum in classes:
-        classesPaths.append('./DatasetPDT/'+classNum+'/avt/')
-
+        classesPaths.append('C:/Users/hadim/Documents/PHD/Projects/Z24Bridge/DatasetPDT/'+classNum+'/avt/')
     print(classesPaths)
     lenTimeserie = 65536
 
@@ -68,9 +68,8 @@ def datasetManagement(NbOfClasses,windows_length=65536):
                         npData=np.array(dataAggregated[i])
                         last_value = npData[-1]
                         additional_values = np.full(lenTimeserie - len(npData), last_value)
-                        npData = np.concatenate((npData, additional_values))
+                        npData = np.concatenate((npData, additional_values))                        
                         datasetFull.append(np.array(npData))
-
                     else:
                         #add directly to data
                         datasetFull.append(np.array(dataAggregated[i]))
@@ -80,7 +79,6 @@ def datasetManagement(NbOfClasses,windows_length=65536):
 
     # Combine dataset and labels for shuffling
     combined_data = list(zip(datasetFull, labelsFull))
-    #combined_data = np.array(combined_data)
     from sklearn.utils import shuffle
     # Shuffle the combined data
     shuffled_data = shuffle(combined_data, random_state=42)
@@ -95,21 +93,14 @@ def datasetManagement(NbOfClasses,windows_length=65536):
     # Scale and reshape dataset
     scaled_dataset = scaler.fit_transform(shuffled_dataset.reshape(-1, lenTimeserie)).reshape(shuffled_dataset.shape)
 
-
     combined_data = list(zip(scaled_dataset, shuffled_labels))
     train_data, test_data, val_data = [], [],[]
 
-    #70% train, 20% test, 10% validation
+    # 70% train, 20% test, 10% validation
     for class_label in range(len(classes)):
         class_data, class_labels = zip(*[(data, label) for data, label in combined_data if label == class_label])
-        #for full classes
-        if NbOfClasses == 15:
-            train, test, ytrain, ytest = train_test_split(class_data, class_labels, test_size=1/5, random_state=42)
-            test, val, ytest, yval = train_test_split(test, ytest, test_size=1/8, random_state=42)
-        else:
-            train, test, ytrain, ytest = train_test_split(class_data, class_labels, test_size=1/5, random_state=seedNumber)
-            test, val, ytest, yval = train_test_split(test, ytest, test_size=1/8, random_state=seedNumber)
-
+        train, test, ytrain, ytest = train_test_split(class_data, class_labels, test_size=1/5, random_state=42)
+        train, val, ytrain, yval = train_test_split(train, ytrain, test_size=1/8, random_state=42)
         train_data.extend(zip(train, ytrain))
         test_data.extend(zip(test, ytest))
         val_data.extend(zip(val, yval))
@@ -126,7 +117,8 @@ def datasetManagement(NbOfClasses,windows_length=65536):
     y_test_pre = np.array(y_test_pre)
     y_val_pre = np.array(y_val_pre)
 
-    def create_windows(data_array, label_array, windows_length):
+    # for windowing (with full length sequence will not change the data)
+    def create_windows(data_array, label_array, windows_length): #Generate from 65K to N windows of selected length
         X, y = [], []
         for i in range(len(data_array)):
             for start in range(0, len(data_array[i]) - windows_length + 1, windows_length):
@@ -134,11 +126,11 @@ def datasetManagement(NbOfClasses,windows_length=65536):
                 X.append(data_array[i][start:end])
                 y.append(label_array[i])
         return X, y
-
+        
     X_train, y_train = create_windows(X_train_pre, y_train_pre, windows_length)
     X_val, y_val = create_windows(X_val_pre, y_val_pre, windows_length)
     X_test, y_test = create_windows(X_test_pre, y_test_pre, windows_length)
-    
+        
     width = len(X_train[0])
 
     X_train = np.array([np.array(x) for x in X_train])
@@ -151,13 +143,14 @@ def datasetManagement(NbOfClasses,windows_length=65536):
     return X_train, X_val, X_test, y_train, y_val, y_test, width
 
 windowSize = 65536
-NbOfClasses = 15
+NbOfClasses = 5
 
 # MiniRocket Model Parameters
 num_kernels = 9996
 maxDilationsPerKernel = 64
 
 X_train, X_val, X_test, y_train, y_val, y_test, width = datasetManagement(NbOfClasses,windowSize)
+
 
 start_time = time.time()
 model = RocketClassifier(num_kernels, max_dilations_per_kernel=maxDilationsPerKernel, rocket_transform='minirocket', use_multivariate='no', n_jobs=-1, random_state=42)
@@ -172,7 +165,3 @@ data_normal_FC.extend(result_all_models_FC)
 print_table(data_normal_FC,headers)
 
 print("Execution time: ", end_time - start_time)
-
-
-
-
