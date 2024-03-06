@@ -47,7 +47,7 @@ def datasetManagement(NbOfClasses,windows_length=65536):
 
     classesPaths=[]
     for classNum in classes:
-        classesPaths.append('C:/Users/hadim/Documents/PHD/Projects/Z24Bridge/DatasetPDT/'+classNum+'/avt/')
+        classesPaths.append('./DatasetPDT/'+classNum+'/avt/')
     print(classesPaths)
     lenTimeserie = 65536
 
