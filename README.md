@@ -10,6 +10,9 @@ WaveNet MiniRocket Z24 Bridge Structural Health Monitoring
     
 ## Overview
 This repository contains the implementation of a cutting-edge approach to Structural Health Monitoring (SHM) of the Z24 Bridge dataset, leveraging the powerful capabilities of WaveNet and MiniRocket algorithms. Our project aims to provide a comprehensive toolset for the analysis, prediction, and understanding of the structural integrity of the Z24 Bridge, a well-known case study in the field of civil engineering and Structural Health Monitoring.
+## Publication
+This work has been published in [IEEE Open Journal of the Industrial Electronics Society](https://doi.org/10.1109/OJIES.2024.3434341).
+Please cite the paper if you use this code.
 ## About the Z24 Bridge Dataset
 The Z24 Bridge dataset is a crucial resource in the SHM community, offering extensive sensor readings from the now-demolished Z24 Bridge in Switzerland. This dataset includes data on various parameters like temperature, strain, and displacement, providing a rich source for analyzing structural behaviors and anomalies. For this work, the Progressive Damage Test (PDT) section is used, in particular the ambient vibration test (avt).
 
@@ -63,7 +66,4 @@ classes = ['01', '03', '04', '05', '06']
 #15 classes
 classes = ['01', '03', '04', '05', '06','07','09','10','11','12','13','14','15','16','17']
 ```
-## Publication
-This work has been published in [IEEE Open Journal of the Industrial Electronics Society](https://doi.org/10.1109/OJIES.2024.3434341).
 
-Please cite the paper if you use this code.
