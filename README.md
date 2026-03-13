@@ -63,3 +63,7 @@ classes = ['01', '03', '04', '05', '06']
 #15 classes
 classes = ['01', '03', '04', '05', '06','07','09','10','11','12','13','14','15','16','17']
 ```
+## Publication
+This work has been published in [IEEE Open Journal of the Industrial Electronics Society](https://doi.org/10.1109/OJIES.2024.3434341).
+
+Please cite the paper if you use this code.
